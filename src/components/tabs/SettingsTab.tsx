@@ -3,6 +3,9 @@ import { useAppContext } from '../../context/AppContext';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/card';
 import { Button } from '../ui/button';
 import { Download, Upload, Trash2, User, Bell, AlertTriangle, CheckCircle2 } from 'lucide-react';
+import { formatDateKey } from '../../utils/dateKeys';
+
+const MAX_BACKUP_BYTES = 2 * 1024 * 1024;
 
 export default function SettingsTab() {
   const {
@@ -26,11 +29,11 @@ export default function SettingsTab() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `fitplanner-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    link.download = `fitplanner-backup-${formatDateKey(new Date())}.json`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+    window.setTimeout(() => URL.revokeObjectURL(url), 0);
   };
 
   const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,6 +41,12 @@ export default function SettingsTab() {
     if (!file) return;
     setImportError(null);
     setImportOk(false);
+
+    if (file.size > MAX_BACKUP_BYTES) {
+      setImportError('Backup file is too large. Please choose a file under 2 MB.');
+      if (fileInputRef.current) fileInputRef.current.value = '';
+      return;
+    }
 
     const reader = new FileReader();
     reader.onload = event => {

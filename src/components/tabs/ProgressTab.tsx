@@ -5,9 +5,10 @@ import { useAppContext, ProgressEntry } from '../../context/AppContext';
 import { Card, CardContent } from '../ui/card';
 import { Button } from '../ui/button';
 import { Plus, Trash2, TrendingUp } from 'lucide-react';
+import { formatDateKey, parseDateKey } from '../../utils/dateKeys';
 
 const blankEntry = (): Omit<ProgressEntry, 'id'> => ({
-  date: format(new Date(), 'yyyy-MM-dd'),
+  date: formatDateKey(new Date()),
   weight: '',
   waist: '',
   sleep: '',
@@ -122,7 +123,7 @@ export default function ProgressTab() {
                   <Trash2 className="w-4 h-4" />
                 </button>
                 <h4 className="font-bold text-emerald-400 mb-3">
-                  {format(new Date(entry.date), 'MMM do, yyyy')}
+                  {format(parseDateKey(entry.date), 'MMM do, yyyy')}
                 </h4>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
                   {entry.weight && (

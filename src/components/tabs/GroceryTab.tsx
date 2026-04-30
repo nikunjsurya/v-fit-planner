@@ -1,13 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { useAppContext } from '../../context/AppContext';
-import { CheckCircle2, Circle, Plus, Trash2, Sparkles } from 'lucide-react';
+import { CheckCircle2, Plus, Trash2, Sparkles } from 'lucide-react';
 import { Button } from '../ui/button';
 
 export default function GroceryTab() {
   const { groceries, setGroceries } = useAppContext();
   const [newItemName, setNewItemName] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(groceries[0]?.id || '');
+
+  useEffect(() => {
+    if (groceries.some(cat => cat.id === selectedCategory)) return;
+    setSelectedCategory(groceries[0]?.id ?? '');
+  }, [groceries, selectedCategory]);
 
   const toggleItem = (categoryId: string, itemId: string) => {
     setGroceries(prev => prev.map(cat => {
@@ -69,20 +74,20 @@ export default function GroceryTab() {
     ];
 
     setGroceries(prev => {
-      let next = [...prev];
-      weeklyEssentials.forEach(item => {
-        const catIdx = next.findIndex(c => c.category === item.category);
-        if (catIdx !== -1) {
-          const exists = next[catIdx].items.find(i => i.name.toLowerCase() === item.name.toLowerCase());
-          if (!exists) {
-            next[catIdx] = {
-              ...next[catIdx],
-              items: [{ id: uuidv4(), name: item.name, checked: false }, ...next[catIdx].items]
-            };
-          }
-        }
+      return prev.map(cat => {
+        const additions = weeklyEssentials.filter(item => {
+          if (item.category !== cat.category) return false;
+          return !cat.items.some(i => i.name.toLowerCase() === item.name.toLowerCase());
+        });
+        if (additions.length === 0) return cat;
+        return {
+          ...cat,
+          items: [
+            ...additions.map(item => ({ id: uuidv4(), name: item.name, checked: false })),
+            ...cat.items,
+          ],
+        };
       });
-      return next;
     });
   };
 
@@ -133,14 +138,22 @@ export default function GroceryTab() {
             <div className="space-y-1">
               {cat.items.map(item => (
                 <div key={item.id} className="flex items-center gap-3 py-2 px-2 rounded-xl border border-transparent hover:border-slate-800 hover:bg-slate-800/40 group transition-colors">
-                  <button onClick={() => toggleItem(cat.id, item.id)} className="text-emerald-500 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => toggleItem(cat.id, item.id)}
+                    aria-label={item.checked ? `Uncheck ${item.name}` : `Check ${item.name}`}
+                    aria-pressed={item.checked}
+                    className="text-emerald-500 shrink-0"
+                  >
                     {item.checked ? <CheckCircle2 className="w-5 h-5" /> : <div className="w-5 h-5 border-2 border-slate-700 rounded-lg"></div>}
                   </button>
                   <span className={`flex-1 text-sm select-none font-medium ${item.checked ? 'text-slate-600 line-through' : 'text-slate-200'}`}>
                     {item.name}
                   </span>
                   <button 
+                    type="button"
                     onClick={() => deleteItem(cat.id, item.id)}
+                    aria-label={`Delete ${item.name}`}
                     className="text-slate-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition p-1 bg-slate-800 rounded-md"
                   >
                     <Trash2 className="w-4 h-4" />

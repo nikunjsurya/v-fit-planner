@@ -1,5 +1,5 @@
 import { Settings, Calendar, Dumbbell, Utensils, ChefHat, ShoppingCart, TrendingUp } from 'lucide-react';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import DashboardTab from './tabs/DashboardTab';
 import WorkoutsTab from './tabs/WorkoutsTab';
 import MealsTab from './tabs/MealsTab';
@@ -19,8 +19,10 @@ const tabs = [
   { id: 'settings', label: 'Settings', icon: Settings, component: SettingsTab },
 ];
 
+const DEFAULT_TAB_ID = 'today';
+
 export default function Layout() {
-  const [activeTab, setActiveTab] = useState(tabs[0].id);
+  const [activeTab, setActiveTab] = useState(DEFAULT_TAB_ID);
   const { profile, progress } = useAppContext();
 
   const ActiveComponent = tabs.find(t => t.id === activeTab)?.component || DashboardTab;

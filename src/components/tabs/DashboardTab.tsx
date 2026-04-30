@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { WorkoutDay } from '../../data/initialData';
 import { getDayPlan } from '../../utils/dayPlan';
+import { formatDateKey, parseDateKey } from '../../utils/dateKeys';
 
 const EMPTY_TRACKING: DailyTracking = {
   creatine: false,
@@ -45,7 +46,7 @@ export default function DashboardTab() {
   const [protShakes, setProtShakes] = useState(2);
   const [protExtra, setProtExtra] = useState(20);
 
-  const todayStr = format(selectedDate, 'yyyy-MM-dd');
+  const todayStr = formatDateKey(selectedDate);
   const selectedTracking: DailyTracking = tracking[todayStr] ?? EMPTY_TRACKING;
   const isViewingToday = isSameDay(selectedDate, new Date());
 
@@ -53,6 +54,8 @@ export default function DashboardTab() {
     () => getDayPlan(selectedDate, workouts),
     [selectedDate, workouts],
   );
+  const plannedWorkoutCompleted =
+    !!expectedWorkout && selectedTracking.workoutCompleted === expectedWorkout.id;
 
   useEffect(() => {
     // Surface the most recent missed workout in the last 3 days, but only when
@@ -63,10 +66,13 @@ export default function DashboardTab() {
     }
     for (let i = 1; i <= 3; i++) {
       const checkDate = subDays(startOfDay(new Date()), i);
-      const checkStr = format(checkDate, 'yyyy-MM-dd');
+      const checkStr = formatDateKey(checkDate);
       const plan = getDayPlan(checkDate, workouts);
       const checkTrack = tracking[checkStr];
-      if (plan.expectedWorkout && (!checkTrack || !checkTrack.workoutCompleted)) {
+      if (
+        plan.expectedWorkout &&
+        checkTrack?.workoutCompleted !== plan.expectedWorkout.id
+      ) {
         setMissedWorkout({ date: checkStr, workout: plan.expectedWorkout });
         return;
       }
@@ -108,7 +114,7 @@ export default function DashboardTab() {
           {weekDays.map(day => {
             const isSelected = isSameDay(day, selectedDate);
             const isToday = isSameDay(day, new Date());
-            const dStr = format(day, 'yyyy-MM-dd');
+            const dStr = formatDateKey(day);
             const hasData = tracking[dStr]?.dayCompleted;
             return (
               <button
@@ -178,7 +184,7 @@ export default function DashboardTab() {
               <p>
                 You missed{' '}
                 <strong className="text-amber-400">{missedWorkout.workout.name}</strong>{' '}
-                on {format(new Date(missedWorkout.date), 'EEEE')}.
+                on {format(parseDateKey(missedWorkout.date), 'EEEE')}.
               </p>
             </div>
           </div>
@@ -215,7 +221,7 @@ export default function DashboardTab() {
           }`}
         >
           <CardHeader>
-            <CardTitle className={selectedTracking.workoutCompleted ? 'text-slate-400' : 'text-emerald-400'}>
+            <CardTitle className={plannedWorkoutCompleted ? 'text-slate-400' : 'text-emerald-400'}>
               Workout of the day
             </CardTitle>
             <CardDescription>
@@ -230,20 +236,20 @@ export default function DashboardTab() {
                   <button
                     onClick={() =>
                       updateTracking({
-                        workoutCompleted: selectedTracking.workoutCompleted
+                        workoutCompleted: plannedWorkoutCompleted
                           ? null
                           : expectedWorkout.id,
                       })
                     }
-                    aria-pressed={!!selectedTracking.workoutCompleted}
+                    aria-pressed={plannedWorkoutCompleted}
                     className={`flex items-center px-3 py-1.5 rounded-lg border transition text-sm font-bold shadow-sm ${
-                      selectedTracking.workoutCompleted
+                      plannedWorkoutCompleted
                         ? 'bg-slate-800 text-emerald-400 border-slate-700'
                         : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20 hover:bg-emerald-500/20'
                     }`}
                   >
                     <CheckCircle2 className="w-4 h-4 mr-2" />
-                    {selectedTracking.workoutCompleted ? 'Completed' : 'Mark completed'}
+                    {plannedWorkoutCompleted ? 'Completed' : 'Mark completed'}
                   </button>
                 </div>
               </div>

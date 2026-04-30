@@ -11,8 +11,9 @@ import { useLocalStorage } from '../hooks/useLocalStorage';
 import {
   validateImport,
   SCHEMA_VERSION,
+} from '../utils/validateImport';
+import type {
   DailyTracking,
-  ExerciseTracking,
   ProgressEntry,
   ReminderSettings,
 } from '../utils/validateImport';

@@ -1,5 +1,4 @@
 import React, { useMemo, useState } from 'react';
-import { format } from 'date-fns';
 import { useAppContext, ExerciseTracking, DailyTracking } from '../../context/AppContext';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/card';
 import { Button } from '../ui/button';
@@ -15,6 +14,7 @@ import {
   StickyNote,
 } from 'lucide-react';
 import { WorkoutDay, Exercise } from '../../data/initialData';
+import { formatDateKey } from '../../utils/dateKeys';
 
 const EMPTY_TRACKING: DailyTracking = {
   creatine: false,
@@ -37,7 +37,7 @@ export default function WorkoutsTab() {
     [workouts, activeId],
   );
 
-  const todayStr = format(new Date(), 'yyyy-MM-dd');
+  const todayStr = formatDateKey(new Date());
   const todayTracking = tracking[todayStr] ?? EMPTY_TRACKING;
 
   const startEdit = () => {
@@ -52,16 +52,22 @@ export default function WorkoutsTab() {
     setIsEditing(false);
   };
 
-  const updateExercise = (idx: number, field: keyof Exercise, value: string) => {
+  const updateExercise = (
+    idx: number,
+    field: 'name' | 'sets' | 'rest' | 'alternatives',
+    value: string,
+  ) => {
     if (!editData) return;
     const newEx = [...editData.exercises];
+    const currentExercise = newEx[idx];
+    if (!currentExercise) return;
     if (field === 'alternatives') {
       newEx[idx] = {
-        ...newEx[idx],
+        ...currentExercise,
         alternatives: value.split(',').map(s => s.trim()).filter(Boolean),
       };
     } else {
-      newEx[idx] = { ...newEx[idx], [field]: value };
+      newEx[idx] = { ...currentExercise, [field]: value };
     }
     setEditData({ ...editData, exercises: newEx });
   };

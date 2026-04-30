@@ -5,17 +5,25 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 // via useEffect, hydrate state on resolve); write stays fire-and-forget. The
 // public signature stays the same so callers do not have to change.
 
-const isBrowser =
-  typeof window !== 'undefined' && typeof window.localStorage !== 'undefined';
+function getLocalStorage(): Storage | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    return window.localStorage;
+  } catch (err) {
+    console.warn('[useLocalStorage] Browser storage is unavailable.', err);
+    return null;
+  }
+}
 
 export function useLocalStorage<T>(
   key: string,
   fallback: T,
 ): [T, Dispatch<SetStateAction<T>>] {
   const [value, setValue] = useState<T>(() => {
-    if (!isBrowser) return fallback;
+    const storage = getLocalStorage();
+    if (!storage) return fallback;
     try {
-      const raw = window.localStorage.getItem(key);
+      const raw = storage.getItem(key);
       if (raw === null) return fallback;
       return JSON.parse(raw) as T;
     } catch (err) {
@@ -24,7 +32,7 @@ export function useLocalStorage<T>(
         err,
       );
       try {
-        window.localStorage.removeItem(key);
+        storage.removeItem(key);
       } catch {
         /* no-op */
       }
@@ -33,9 +41,10 @@ export function useLocalStorage<T>(
   });
 
   useEffect(() => {
-    if (!isBrowser) return;
+    const storage = getLocalStorage();
+    if (!storage) return;
     try {
-      window.localStorage.setItem(key, JSON.stringify(value));
+      storage.setItem(key, JSON.stringify(value));
     } catch (err) {
       // Quota or serialization error. Don't crash; user can still use the app
       // for the current session. Surface to the console for debugging.

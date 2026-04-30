@@ -22,6 +22,7 @@ Requires Node 18+ (Node 20+ recommended).
 
 ```bash
 npm run dev      # http://localhost:3000 (HMR, no PWA)
+npm run dev:host # expose dev server on your LAN for phone testing
 npm run build    # production build → dist/ (PWA assets generated)
 npm run preview  # serve the production build
 npm run lint     # tsc --noEmit (type check)
