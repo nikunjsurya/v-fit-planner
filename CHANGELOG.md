@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.2.3 - 2026-04-30
+
+- Added full alternate workout plans for every training day, matching the same
+  movement targets and volume intent as each primary plan.
+- Added Primary / Alternate tabs in workout detail views so busy-gym or
+  comfort-based substitutions can be followed as a full session.
+- Expanded per-exercise replacement lists so every primary movement has useful
+  substitutions.
+- Added workout data normalization so existing saved workouts receive missing
+  alternate plans after the update.
+
 ## 0.2.2 - 2026-04-30
 
 - Added the reusable `PageVisual` artwork component with stable responsive

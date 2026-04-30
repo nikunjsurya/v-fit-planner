@@ -1,4 +1,11 @@
-import React, { createContext, useContext, Dispatch, SetStateAction } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  Dispatch,
+  SetStateAction,
+} from 'react';
 import {
   WorkoutDay,
   GroceryCategory,
@@ -6,6 +13,7 @@ import {
   defaultWorkouts,
   defaultGroceries,
   defaultProfile,
+  ensureWorkoutAlternates,
 } from '../data/initialData';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import {
@@ -87,6 +95,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     STORAGE_KEYS.profile,
     defaultProfile,
   );
+  const normalizedWorkouts = useMemo(
+    () => ensureWorkoutAlternates(workouts),
+    [workouts],
+  );
+
+  useEffect(() => {
+    if (normalizedWorkouts !== workouts) {
+      setWorkouts(normalizedWorkouts);
+    }
+  }, [normalizedWorkouts, setWorkouts, workouts]);
 
   const resetToDefaults = () => {
     if (
@@ -137,7 +155,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   return (
     <AppContext.Provider
       value={{
-        workouts, setWorkouts,
+        workouts: normalizedWorkouts, setWorkouts,
         groceries, setGroceries,
         tracking, setTracking,
         progress, setProgress,

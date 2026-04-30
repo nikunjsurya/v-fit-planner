@@ -25,9 +25,12 @@ const EMPTY_TRACKING: DailyTracking = {
   workoutCompleted: null,
 };
 
+type PlanMode = 'primary' | 'alternate';
+
 export default function WorkoutsTab() {
   const { workouts, setWorkouts, tracking, setTracking } = useAppContext();
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [planMode, setPlanMode] = useState<PlanMode>('primary');
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState<WorkoutDay | null>(null);
   const [openNoteFor, setOpenNoteFor] = useState<string | null>(null);
@@ -43,6 +46,7 @@ export default function WorkoutsTab() {
 
   const startEdit = () => {
     if (!activeWorkout) return;
+    setPlanMode('primary');
     setEditData(JSON.parse(JSON.stringify(activeWorkout)));
     setIsEditing(true);
   };
@@ -186,11 +190,28 @@ export default function WorkoutsTab() {
   }
 
   if (activeWorkout) {
+    const hasAlternatePlan = !!activeWorkout.alternateExercises?.length;
+    const visibleExercises =
+      planMode === 'alternate' && hasAlternatePlan
+        ? activeWorkout.alternateExercises ?? activeWorkout.exercises
+        : activeWorkout.exercises;
+    const visibleDescription =
+      planMode === 'alternate' && activeWorkout.alternateDescription
+        ? activeWorkout.alternateDescription
+        : activeWorkout.description;
+
     return (
       <div className="space-y-4">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center">
-            <Button variant="ghost" onClick={() => setActiveId(null)} className="mr-2 px-2">
+            <Button
+              variant="ghost"
+              onClick={() => {
+                setActiveId(null);
+                setPlanMode('primary');
+              }}
+              className="mr-2 px-2"
+            >
               &larr; Back
             </Button>
             <h2 className="text-3xl font-bold tracking-tight text-white">{activeWorkout.name}</h2>
@@ -207,11 +228,46 @@ export default function WorkoutsTab() {
         </div>
 
         <p className="text-emerald-400 font-medium text-sm pb-4 border-b border-slate-800">
-          {activeWorkout.description}
+          {visibleDescription}
         </p>
 
+        {hasAlternatePlan && (
+          <div
+            role="tablist"
+            aria-label="Workout plan"
+            className="grid grid-cols-2 gap-1 rounded-xl border border-slate-800 bg-slate-950 p-1"
+          >
+            <button
+              type="button"
+              role="tab"
+              aria-selected={planMode === 'primary'}
+              onClick={() => setPlanMode('primary')}
+              className={`rounded-lg px-3 py-2 text-xs font-bold uppercase transition ${
+                planMode === 'primary'
+                  ? 'bg-emerald-500 text-slate-950'
+                  : 'text-slate-400 hover:bg-slate-900 hover:text-slate-100'
+              }`}
+            >
+              Primary
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={planMode === 'alternate'}
+              onClick={() => setPlanMode('alternate')}
+              className={`rounded-lg px-3 py-2 text-xs font-bold uppercase transition ${
+                planMode === 'alternate'
+                  ? 'bg-amber-400 text-slate-950'
+                  : 'text-slate-400 hover:bg-slate-900 hover:text-slate-100'
+              }`}
+            >
+              Alternate
+            </button>
+          </div>
+        )}
+
         <div className="space-y-3 mt-6">
-          {activeWorkout.exercises.map((ex, idx) => {
+          {visibleExercises.map((ex, idx) => {
             const exTrack = todayTracking.exercises?.[ex.id];
             return (
               <ExerciseCard
@@ -275,16 +331,26 @@ export default function WorkoutsTab() {
           <Card
             key={workout.id}
             className="cursor-pointer hover:border-emerald-500/50 transition bg-slate-900 border-slate-800"
-            onClick={() => setActiveId(workout.id)}
+            onClick={() => {
+              setActiveId(workout.id);
+              setPlanMode('primary');
+            }}
           >
             <CardHeader>
               <CardTitle>{workout.name}</CardTitle>
               <CardDescription className="line-clamp-2">{workout.description}</CardDescription>
             </CardHeader>
             <CardContent className="pt-0">
-              <span className="px-2 py-1 bg-slate-800 rounded font-semibold text-[10px] text-slate-300">
-                {workout.exercises.length} exercises
-              </span>
+              <div className="flex flex-wrap gap-2">
+                <span className="px-2 py-1 bg-slate-800 rounded font-semibold text-[10px] text-slate-300">
+                  {workout.exercises.length} primary
+                </span>
+                {workout.alternateExercises?.length ? (
+                  <span className="px-2 py-1 bg-amber-500/10 border border-amber-500/20 rounded font-semibold text-[10px] text-amber-300">
+                    {workout.alternateExercises.length} alternate
+                  </span>
+                ) : null}
+              </div>
             </CardContent>
           </Card>
         ))}
@@ -373,7 +439,7 @@ function ExerciseCard({
               <span className="text-[10px] font-bold">{index + 1}</span>
             </div>
             <div className="min-w-0">
-              <h3 className={`font-semibold text-sm transition-colors truncate ${titleClass}`}>
+              <h3 className={`font-semibold text-sm leading-snug transition-colors ${titleClass}`}>
                 {ex.name}
               </h3>
               <p className="text-[11px] mt-0.5 text-slate-500">

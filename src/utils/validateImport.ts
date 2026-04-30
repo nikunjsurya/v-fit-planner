@@ -163,10 +163,12 @@ function validateCardio(raw: unknown): CardioConfig | null | string {
 
 function validateWorkout(raw: unknown, idx: number): WorkoutDay | string {
   if (!isObject(raw)) return `workouts[${idx}] is not an object`;
-  const { id, slot, name, description, exercises, cardio } = raw;
+  const { id, slot, name, description, exercises, alternateDescription, alternateExercises, cardio } = raw;
   if (!isId(id)) return `workouts[${idx}].id missing or invalid`;
   if (!isRequiredString(name)) return `workouts[${idx}].name missing or too long`;
   if (!isRequiredString(description)) return `workouts[${idx}].description missing or too long`;
+  if (alternateDescription != null && !isBoundedString(alternateDescription))
+    return `workouts[${idx}].alternateDescription is too long`;
   if (!Array.isArray(exercises))
     return `workouts[${idx}].exercises must be an array`;
   if (exercises.length > MAX_EXERCISES_PER_WORKOUT)
@@ -177,6 +179,22 @@ function validateWorkout(raw: unknown, idx: number): WorkoutDay | string {
     const ex = validateExercise(exercises[i]);
     if (typeof ex === 'string') return `workouts[${idx}].exercises[${i}]: ${ex}`;
     exs.push(ex);
+  }
+
+  let altExs: Exercise[] | undefined;
+  if (alternateExercises != null) {
+    if (!Array.isArray(alternateExercises))
+      return `workouts[${idx}].alternateExercises must be an array`;
+    if (alternateExercises.length > MAX_EXERCISES_PER_WORKOUT)
+      return `workouts[${idx}].alternateExercises has too many entries`;
+
+    altExs = [];
+    for (let i = 0; i < alternateExercises.length; i++) {
+      const ex = validateExercise(alternateExercises[i]);
+      if (typeof ex === 'string')
+        return `workouts[${idx}].alternateExercises[${i}]: ${ex}`;
+      altExs.push(ex);
+    }
   }
 
   // Slot is new in v1. Accept legacy workouts without it; fall back by
@@ -198,6 +216,8 @@ function validateWorkout(raw: unknown, idx: number): WorkoutDay | string {
     name,
     description,
     exercises: exs,
+    ...(isString(alternateDescription) ? { alternateDescription } : {}),
+    ...(altExs?.length ? { alternateExercises: altExs } : {}),
     cardio: cardioResult,
   };
 }
