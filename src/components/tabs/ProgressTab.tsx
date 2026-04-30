@@ -46,6 +46,15 @@ export default function ProgressTab() {
         </Button>
       </div>
 
+      <div className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-900">
+        <img
+          src="/images/progress-metrics.svg"
+          alt="Fitness progress chart"
+          loading="lazy"
+          className="h-36 w-full object-cover sm:h-44"
+        />
+      </div>
+
       {showAdd && (
         <Card className="border-emerald-500/20 bg-slate-900 border">
           <CardContent className="pt-6">

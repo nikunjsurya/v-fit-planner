@@ -34,9 +34,11 @@ export default function Layout() {
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex w-64 flex-col border border-slate-800 bg-slate-900/40 rounded-2xl z-10">
         <div className="flex h-16 items-center px-6 border-b border-slate-800/50">
-          <div className="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(16,185,129,0.3)] mr-3">
-            <span className="text-slate-900 font-bold text-lg leading-none">V</span>
-          </div>
+          <img
+            src="/icon.svg"
+            alt="V-Fit"
+            className="mr-3 h-9 w-9 rounded-xl shadow-[0_0_18px_rgba(16,185,129,0.28)]"
+          />
           <div>
             <h1 className="text-lg font-semibold leading-none tracking-tight text-white mb-0.5">V-Fit Planner</h1>
             <p className="text-[10px] text-slate-500">Night Shift Mode</p>
@@ -82,9 +84,11 @@ export default function Layout() {
       <main className="flex-1 overflow-y-auto pb-[calc(5rem+env(safe-area-inset-bottom))] md:pb-0 relative md:bg-slate-900 md:border md:border-slate-800 md:rounded-3xl">
         <header className="md:hidden flex h-[calc(3.5rem+env(safe-area-inset-top))] pt-[env(safe-area-inset-top)] items-center justify-between px-4 border-b border-slate-800 bg-[#09090b]/80 backdrop-blur sticky top-0 z-10">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(16,185,129,0.3)]">
-              <span className="text-slate-900 font-bold text-lg leading-none">V</span>
-            </div>
+            <img
+              src="/icon.svg"
+              alt="V-Fit"
+              className="h-9 w-9 rounded-xl shadow-[0_0_18px_rgba(16,185,129,0.28)]"
+            />
             <div>
               <h1 className="text-base font-semibold leading-none tracking-tight text-white mb-0.5">V-Fit Planner</h1>
             </div>

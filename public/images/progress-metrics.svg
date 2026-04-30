@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 420" role="img" aria-label="Fitness progress chart">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="900" y2="420" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#111827"/>
+      <stop offset="0.58" stop-color="#0f172a"/>
+      <stop offset="1" stop-color="#172554"/>
+    </linearGradient>
+    <linearGradient id="line" x1="112" y1="274" x2="768" y2="110" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#34d399"/>
+      <stop offset="0.5" stop-color="#fbbf24"/>
+      <stop offset="1" stop-color="#60a5fa"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="420" rx="36" fill="url(#bg)"/>
+  <rect x="94" y="74" width="712" height="272" rx="28" fill="#020617" opacity="0.52" stroke="#334155" stroke-width="3"/>
+  <g stroke="#334155" stroke-width="2" opacity="0.75">
+    <path d="M132 292h632"/>
+    <path d="M132 238h632"/>
+    <path d="M132 184h632"/>
+    <path d="M132 130h632"/>
+    <path d="M190 104v216"/>
+    <path d="M310 104v216"/>
+    <path d="M430 104v216"/>
+    <path d="M550 104v216"/>
+    <path d="M670 104v216"/>
+  </g>
+  <path d="M144 270c64-8 96-58 150-52 58 6 76 60 140 44 70-18 74-112 144-126 62-12 96 38 154-20" fill="none" stroke="url(#line)" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+  <g fill="#020617" stroke-width="8">
+    <circle cx="144" cy="270" r="17" stroke="#34d399"/>
+    <circle cx="294" cy="218" r="17" stroke="#34d399"/>
+    <circle cx="434" cy="262" r="17" stroke="#fbbf24"/>
+    <circle cx="578" cy="136" r="17" stroke="#fbbf24"/>
+    <circle cx="732" cy="116" r="17" stroke="#60a5fa"/>
+  </g>
+  <g transform="translate(118 330)">
+    <rect x="0" y="0" width="158" height="48" rx="16" fill="#064e3b"/>
+    <path d="M24 25h94" stroke="#34d399" stroke-width="10" stroke-linecap="round"/>
+  </g>
+  <g transform="translate(316 330)">
+    <rect x="0" y="0" width="158" height="48" rx="16" fill="#451a03"/>
+    <path d="M24 25h82" stroke="#fbbf24" stroke-width="10" stroke-linecap="round"/>
+  </g>
+  <g transform="translate(514 330)">
+    <rect x="0" y="0" width="158" height="48" rx="16" fill="#172554"/>
+    <path d="M24 25h104" stroke="#60a5fa" stroke-width="10" stroke-linecap="round"/>
+  </g>
+</svg>

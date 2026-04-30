@@ -9,6 +9,15 @@ export default function MealsTab() {
         <p className="text-slate-400">Vegetarian (no egg) protein and carb sources.</p>
       </div>
 
+      <div className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-900">
+        <img
+          src="/images/meal-prep-fuel.svg"
+          alt="Meal prep bowls and protein ingredients"
+          loading="lazy"
+          className="h-36 w-full object-cover sm:h-44"
+        />
+      </div>
+
       <div className="grid gap-4 sm:grid-cols-2">
         <Card className="bg-slate-900 border-slate-800">
           <CardHeader>

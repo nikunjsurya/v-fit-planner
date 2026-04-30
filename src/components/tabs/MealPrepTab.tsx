@@ -10,6 +10,15 @@ export default function MealPrepTab() {
         <p className="text-slate-400">Two cooking sessions per week to cover work shifts.</p>
       </div>
 
+      <div className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-900">
+        <img
+          src="/images/meal-prep-fuel.svg"
+          alt="Meal prep bowls and protein ingredients"
+          loading="lazy"
+          className="h-36 w-full object-cover sm:h-44"
+        />
+      </div>
+
       <div className="space-y-4">
         {defaultMealPrepSessions.map((session) => (
           <Card key={session.id} className="border-emerald-500/20 bg-slate-900 border overflow-hidden">

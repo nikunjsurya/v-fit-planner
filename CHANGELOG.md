@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.1 - 2026-04-30
+
+- Added a redesigned local SVG favicon/app icon with a night-gym fitness mark.
+- Added local image assets for the Today, Meals, Meal Prep, and Progress views.
+- Wired the favicon into browser metadata and reused the brand icon in desktop
+  and mobile app chrome.
+
 ## 0.2.0 - 2026-04-30
 
 - Hardened backup restore validation against malformed JSON, oversized files,

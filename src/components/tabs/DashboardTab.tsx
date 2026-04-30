@@ -159,6 +159,14 @@ export default function DashboardTab() {
         <p className="text-emerald-400 font-medium">{scheduleNote}</p>
       </div>
 
+      <div className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-900">
+        <img
+          src="/images/night-shift-training.svg"
+          alt="Night training gym scene"
+          className="h-36 w-full object-cover sm:h-44"
+        />
+      </div>
+
       {sleepHours < 5 && isViewingToday && expectedWorkout && (
         <div className="bg-red-500/10 border border-red-500/30 rounded-2xl p-4 flex gap-3 shadow-lg max-w-full">
           <span className="text-red-400 mt-0.5">
