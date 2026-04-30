@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { WorkoutDay, Exercise } from '../../data/initialData';
 import { formatDateKey } from '../../utils/dateKeys';
+import PageVisual from '../ui/PageVisual';
 
 const EMPTY_TRACKING: DailyTracking = {
   creatine: false,
@@ -266,6 +267,8 @@ export default function WorkoutsTab() {
           Select a workout to view details, sets, and alternatives.
         </p>
       </div>
+
+      <PageVisual name="workouts" />
 
       <div className="grid gap-4 sm:grid-cols-2">
         {workouts.map(workout => (

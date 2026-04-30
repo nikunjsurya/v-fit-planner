@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { useAppContext } from '../../context/AppContext';
 import { CheckCircle2, Plus, Trash2, Sparkles } from 'lucide-react';
 import { Button } from '../ui/button';
+import PageVisual from '../ui/PageVisual';
 
 export default function GroceryTab() {
   const { groceries, setGroceries } = useAppContext();
@@ -100,6 +101,8 @@ export default function GroceryTab() {
         </div>
         <Button variant="outline" size="sm" onClick={uncheckAll}>Reset All</Button>
       </div>
+
+      <PageVisual name="grocery" />
 
       <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="text-sm">

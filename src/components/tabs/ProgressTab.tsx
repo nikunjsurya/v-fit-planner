@@ -6,6 +6,7 @@ import { Card, CardContent } from '../ui/card';
 import { Button } from '../ui/button';
 import { Plus, Trash2, TrendingUp } from 'lucide-react';
 import { formatDateKey, parseDateKey } from '../../utils/dateKeys';
+import PageVisual from '../ui/PageVisual';
 
 const blankEntry = (): Omit<ProgressEntry, 'id'> => ({
   date: formatDateKey(new Date()),
@@ -46,14 +47,7 @@ export default function ProgressTab() {
         </Button>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-900">
-        <img
-          src="/images/progress-metrics.svg"
-          alt="Fitness progress chart"
-          loading="lazy"
-          className="h-36 w-full object-cover sm:h-44"
-        />
-      </div>
+      <PageVisual name="progress" />
 
       {showAdd && (
         <Card className="border-emerald-500/20 bg-slate-900 border">

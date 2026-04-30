@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 420" role="img" aria-label="Planner settings and backup controls">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="900" y2="420" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#111827"/>
+      <stop offset="0.55" stop-color="#0f172a"/>
+      <stop offset="1" stop-color="#172554"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="232" y1="86" x2="678" y2="332" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#34d399"/>
+      <stop offset="0.5" stop-color="#60a5fa"/>
+      <stop offset="1" stop-color="#f59e0b"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="420" rx="36" fill="url(#bg)"/>
+  <circle cx="762" cy="90" r="72" fill="#60a5fa" opacity="0.12"/>
+  <circle cx="144" cy="320" r="86" fill="#10b981" opacity="0.12"/>
+  <g transform="translate(154 70)">
+    <rect x="0" y="0" width="592" height="280" rx="34" fill="#020617" opacity="0.58" stroke="#334155" stroke-width="3"/>
+    <g transform="translate(58 48)">
+      <rect x="0" y="0" width="214" height="56" rx="20" fill="#0f172a"/>
+      <circle cx="34" cy="28" r="14" fill="#34d399"/>
+      <path d="M72 28h98" stroke="#e2e8f0" stroke-width="12" stroke-linecap="round"/>
+      <rect x="0" y="82" width="214" height="56" rx="20" fill="#0f172a"/>
+      <circle cx="34" cy="110" r="14" fill="#60a5fa"/>
+      <path d="M72 110h122" stroke="#cbd5e1" stroke-width="12" stroke-linecap="round"/>
+      <rect x="0" y="164" width="214" height="56" rx="20" fill="#0f172a"/>
+      <circle cx="34" cy="192" r="14" fill="#f59e0b"/>
+      <path d="M72 192h78" stroke="#cbd5e1" stroke-width="12" stroke-linecap="round"/>
+    </g>
+    <g transform="translate(344 54)">
+      <circle cx="80" cy="80" r="72" fill="#0f172a" stroke="url(#accent)" stroke-width="14"/>
+      <path d="M80 36v88" stroke="#e2e8f0" stroke-width="14" stroke-linecap="round"/>
+      <path d="M42 80h76" stroke="#e2e8f0" stroke-width="14" stroke-linecap="round"/>
+      <circle cx="80" cy="80" r="18" fill="#34d399"/>
+      <rect x="4" y="176" width="154" height="42" rx="16" fill="#064e3b"/>
+      <path d="M34 197h92" stroke="#34d399" stroke-width="10" stroke-linecap="round"/>
+    </g>
+  </g>
+</svg>

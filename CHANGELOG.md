@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.2.2 - 2026-04-30
+
+- Added the reusable `PageVisual` artwork component with stable responsive
+  aspect ratios, rounded framing, accessible alt text, and shared page artwork
+  metadata.
+- Expanded the branded local asset set with Workouts, Grocery, and Settings
+  visuals so every main page has consistent offline artwork.
+- Replaced one-off page image markup with the shared visual system.
+
 ## 0.2.1 - 2026-04-30
 
 - Added a redesigned local SVG favicon/app icon with a night-gym fitness mark.

@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui
 import { Button } from '../ui/button';
 import { Download, Upload, Trash2, User, Bell, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import { formatDateKey } from '../../utils/dateKeys';
+import PageVisual from '../ui/PageVisual';
 
 const MAX_BACKUP_BYTES = 2 * 1024 * 1024;
 
@@ -74,6 +75,8 @@ export default function SettingsTab() {
         <h2 className="text-3xl font-bold tracking-tight text-white mb-2">Settings & profile</h2>
         <p className="text-slate-400">Manage your data and profile.</p>
       </div>
+
+      <PageVisual name="settings" />
 
       <Card className="bg-slate-900 border-slate-800">
         <CardHeader>
