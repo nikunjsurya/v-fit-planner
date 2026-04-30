@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import {
   WorkoutDay,
   Exercise,
@@ -226,7 +227,7 @@ function validateProgressEntry(raw: unknown, idx: number): ProgressEntry | strin
   const { id, date, weight, waist, sleep, notes } = raw;
   if (!isString(date)) return `progress[${idx}].date missing`;
   return {
-    id: isString(id) ? id : `${Date.now()}-${idx}`,
+    id: isString(id) ? id : uuidv4(),
     date,
     weight: isString(weight) ? weight : '',
     waist: isString(waist) ? waist : '',

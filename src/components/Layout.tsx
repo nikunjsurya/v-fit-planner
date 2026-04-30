@@ -77,8 +77,8 @@ export default function Layout() {
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 overflow-y-auto pb-20 md:pb-0 relative md:bg-slate-900 md:border md:border-slate-800 md:rounded-3xl">
-        <header className="md:hidden flex h-14 items-center justify-between px-4 border-b border-slate-800 bg-[#09090b]/80 backdrop-blur sticky top-0 z-10">
+      <main className="flex-1 overflow-y-auto pb-[calc(5rem+env(safe-area-inset-bottom))] md:pb-0 relative md:bg-slate-900 md:border md:border-slate-800 md:rounded-3xl">
+        <header className="md:hidden flex h-[calc(3.5rem+env(safe-area-inset-top))] pt-[env(safe-area-inset-top)] items-center justify-between px-4 border-b border-slate-800 bg-[#09090b]/80 backdrop-blur sticky top-0 z-10">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(16,185,129,0.3)]">
               <span className="text-slate-900 font-bold text-lg leading-none">V</span>
@@ -94,7 +94,7 @@ export default function Layout() {
       </main>
 
       {/* Mobile Bottom Nav */}
-      <nav className="fixed bottom-0 left-0 right-0 z-20 flex h-16 items-center justify-around border-t border-slate-800 bg-[#09090b]/95 backdrop-blur-md md:hidden pb-safe">
+      <nav className="fixed bottom-0 left-0 right-0 z-20 flex h-[calc(4rem+env(safe-area-inset-bottom))] pb-[env(safe-area-inset-bottom)] items-center justify-around border-t border-slate-800 bg-[#09090b]/95 backdrop-blur-md md:hidden">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;

@@ -26,8 +26,10 @@
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@types/uuid": "^10.0.0",
+    "@vite-pwa/assets-generator": "^1.0.2",
     "autoprefixer": "^10.4.21",
     "tailwindcss": "^4.1.14",
-    "typescript": "~5.8.2"
+    "typescript": "~5.8.2",
+    "vite-plugin-pwa": "^1.2.0"
   }
 }

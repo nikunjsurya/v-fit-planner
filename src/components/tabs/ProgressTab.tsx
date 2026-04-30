@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { format } from 'date-fns';
+import { v4 as uuidv4 } from 'uuid';
 import { useAppContext, ProgressEntry } from '../../context/AppContext';
 import { Card, CardContent } from '../ui/card';
 import { Button } from '../ui/button';
@@ -20,7 +21,7 @@ export default function ProgressTab() {
 
   const handleAdd = (e: React.FormEvent) => {
     e.preventDefault();
-    const entry: ProgressEntry = { ...draft, id: Date.now().toString() };
+    const entry: ProgressEntry = { ...draft, id: uuidv4() };
     setProgress(prev => [entry, ...prev]);
     setDraft(blankEntry());
     setShowAdd(false);
