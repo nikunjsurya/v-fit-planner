@@ -23,6 +23,7 @@ const EMPTY_TRACKING: DailyTracking = {
   shake1: false,
   shake2: false,
   workoutCompleted: null,
+  dayCompleted: false,
 };
 
 type PlanMode = 'primary' | 'alternate';

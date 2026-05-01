@@ -37,6 +37,21 @@ const EMPTY_TRACKING: DailyTracking = {
 const SLEEP_MIN = 0;
 const SLEEP_MAX = 14;
 
+// Calendar dot lights up for *any* tracking signal, not just an explicit
+// "Finish day". Otherwise exercise checks in Workouts tab look like they
+// silently failed.
+function hasTrackingActivity(day: DailyTracking | undefined): boolean {
+  if (!day) return false;
+  if (day.dayCompleted) return true;
+  if (day.workoutCompleted) return true;
+  if (day.creatine || day.water || day.shake1 || day.shake2) return true;
+  if (typeof day.sleepHours === 'number') return true;
+  if (typeof day.mealPrepBoxesDone === 'number' && day.mealPrepBoxesDone > 0) return true;
+  if (day.notes && day.notes.trim().length > 0) return true;
+  if (day.exercises && Object.keys(day.exercises).length > 0) return true;
+  return false;
+}
+
 export default function DashboardTab() {
   const { tracking, setTracking, workouts } = useAppContext();
   const [selectedDate, setSelectedDate] = useState(startOfDay(new Date()));
@@ -116,7 +131,7 @@ export default function DashboardTab() {
             const isSelected = isSameDay(day, selectedDate);
             const isToday = isSameDay(day, new Date());
             const dStr = formatDateKey(day);
-            const hasData = tracking[dStr]?.dayCompleted;
+            const hasData = hasTrackingActivity(tracking[dStr]);
             return (
               <button
                 key={dStr}
