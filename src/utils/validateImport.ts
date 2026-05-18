@@ -397,6 +397,37 @@ export function validateImport(raw: unknown): ImportPayload {
   if (typeof remindersResult === 'string')
     throw new ImportValidationError(remindersResult);
 
+  // Cross-reference pass: drop tracking.workoutCompleted ids that don't
+  // map to a workout in the imported workouts array, and drop any
+  // exercise tracking keyed by an exercise id not present in the
+  // imported (primary OR alternate) exercises. Otherwise an old backup
+  // with mismatched workouts silently keeps dead foreign keys that
+  // never resolve in the UI.
+  const validWorkoutIds = new Set(workouts.map((w) => w.id));
+  const validExerciseIds = new Set<string>();
+  for (const w of workouts) {
+    for (const e of w.exercises) validExerciseIds.add(e.id);
+    for (const e of w.alternateExercises ?? []) validExerciseIds.add(e.id);
+  }
+  for (const date of Object.keys(tracking)) {
+    const t = tracking[date];
+    if (!t) continue;
+    if (t.workoutCompleted && !validWorkoutIds.has(t.workoutCompleted)) {
+      t.workoutCompleted = null;
+    }
+    if (t.exercises) {
+      const cleaned = createRecord<ExerciseTracking>();
+      for (const [exId, val] of Object.entries(t.exercises)) {
+        if (validExerciseIds.has(exId)) cleaned[exId] = val;
+      }
+      if (Object.keys(cleaned).length) {
+        t.exercises = cleaned;
+      } else {
+        delete t.exercises;
+      }
+    }
+  }
+
   return {
     schemaVersion: SCHEMA_VERSION,
     ...(isBoundedString(raw.exportedAt) ? { exportedAt: raw.exportedAt } : {}),

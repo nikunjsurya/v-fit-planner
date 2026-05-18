@@ -320,8 +320,14 @@ export default function DashboardTab() {
                     <span className="text-sm text-slate-300">Extra (yogurt, etc.)</span>
                     <input
                       type="number"
+                      min="0"
+                      max="500"
                       value={protExtra}
-                      onChange={e => setProtExtra(Number(e.target.value) || 0)}
+                      onChange={e => {
+                        const n = Number(e.target.value);
+                        // Clamp + reject NaN / Infinity so the total stays sane.
+                        setProtExtra(Number.isFinite(n) ? Math.max(0, Math.min(500, n)) : 0);
+                      }}
                       className="w-14 bg-slate-950 border border-slate-800 rounded px-2 py-1 text-sm text-center font-mono outline-none focus:border-emerald-500"
                     />
                   </div>

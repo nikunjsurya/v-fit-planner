@@ -5,6 +5,11 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 // via useEffect, hydrate state on resolve); write stays fire-and-forget. The
 // public signature stays the same so callers do not have to change.
 
+// One-time signal that some key got auto-cleared on read because its
+// JSON was corrupt. SettingsTab reads this and shows a recovery banner
+// so users notice they were silently reset to defaults.
+export const RECOVERY_FLAG_KEY = '_fit_last_recovery';
+
 function getLocalStorage(): Storage | null {
   if (typeof window === 'undefined') return null;
   try {
@@ -12,6 +17,23 @@ function getLocalStorage(): Storage | null {
   } catch (err) {
     console.warn('[useLocalStorage] Browser storage is unavailable.', err);
     return null;
+  }
+}
+
+function flagRecovery(key: string, message: string) {
+  const storage = getLocalStorage();
+  if (!storage) return;
+  try {
+    storage.setItem(
+      RECOVERY_FLAG_KEY,
+      JSON.stringify({
+        key,
+        message,
+        at: new Date().toISOString(),
+      }),
+    );
+  } catch {
+    /* if we can't flag it, the user won't see the notice — not fatal */
   }
 }
 
@@ -36,6 +58,10 @@ export function useLocalStorage<T>(
       } catch {
         /* no-op */
       }
+      flagRecovery(
+        key,
+        `Stored data for "${key}" was corrupted and reset to defaults.`,
+      );
       return fallback;
     }
   });

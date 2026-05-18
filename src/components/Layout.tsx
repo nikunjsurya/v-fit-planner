@@ -27,7 +27,15 @@ export default function Layout() {
 
   const ActiveComponent = tabs.find(t => t.id === activeTab)?.component || DashboardTab;
   const latestWeight = progress[0]?.weight;
-  const heightFt = profile.heightCm > 0 ? `${Math.floor(profile.heightCm / 30.48)}'${Math.round((profile.heightCm / 2.54) % 12)}"` : null;
+  // Round total inches first, then split into feet+inches. Avoids the
+  // off-by-one where 152 cm rounded to 5'12" instead of 5'0".
+  const heightFt = (() => {
+    if (profile.heightCm <= 0) return null;
+    const totalInches = Math.round(profile.heightCm / 2.54);
+    const feet = Math.floor(totalInches / 12);
+    const inches = totalInches % 12;
+    return `${feet}'${inches}"`;
+  })();
 
   return (
     <div className="flex h-screen w-full flex-col bg-[#09090b] text-slate-100 md:flex-row overflow-hidden font-sans md:p-6 md:gap-4">

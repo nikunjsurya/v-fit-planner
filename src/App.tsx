@@ -5,11 +5,14 @@
 
 import { AppProvider } from './context/AppContext';
 import Layout from './components/Layout';
+import ErrorBoundary from './components/ErrorBoundary';
 
 export default function App() {
   return (
-    <AppProvider>
-      <Layout />
-    </AppProvider>
+    <ErrorBoundary>
+      <AppProvider>
+        <Layout />
+      </AppProvider>
+    </ErrorBoundary>
   );
 }

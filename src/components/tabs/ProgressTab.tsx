@@ -70,6 +70,8 @@ export default function ProgressTab() {
                   <input
                     type="number"
                     step="0.1"
+                    min="30"
+                    max="300"
                     placeholder="e.g. 82.5"
                     value={draft.weight}
                     onChange={e => setDraft(d => ({ ...d, weight: e.target.value }))}
@@ -89,6 +91,8 @@ export default function ProgressTab() {
                   <input
                     type="number"
                     step="0.5"
+                    min="0"
+                    max="14"
                     placeholder="e.g. 7.5"
                     value={draft.sleep}
                     onChange={e => setDraft(d => ({ ...d, sleep: e.target.value }))}

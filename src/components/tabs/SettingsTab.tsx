@@ -1,10 +1,33 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useAppContext } from '../../context/AppContext';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/card';
 import { Button } from '../ui/button';
-import { Download, Upload, Trash2, User, Bell, AlertTriangle, CheckCircle2 } from 'lucide-react';
+import { Download, Upload, Trash2, User, Bell, AlertTriangle, CheckCircle2, X } from 'lucide-react';
 import { formatDateKey } from '../../utils/dateKeys';
+import { RECOVERY_FLAG_KEY } from '../../hooks/useLocalStorage';
 import PageVisual from '../ui/PageVisual';
+
+type RecoveryNotice = { key: string; message: string; at: string };
+
+function readRecoveryNotice(): RecoveryNotice | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = window.localStorage.getItem(RECOVERY_FLAG_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as RecoveryNotice;
+    if (
+      parsed &&
+      typeof parsed.key === 'string' &&
+      typeof parsed.message === 'string' &&
+      typeof parsed.at === 'string'
+    ) {
+      return parsed;
+    }
+  } catch {
+    /* malformed flag — ignore */
+  }
+  return null;
+}
 
 const MAX_BACKUP_BYTES = 2 * 1024 * 1024;
 
@@ -21,6 +44,20 @@ export default function SettingsTab() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [importError, setImportError] = useState<string | null>(null);
   const [importOk, setImportOk] = useState(false);
+  const [recovery, setRecovery] = useState<RecoveryNotice | null>(null);
+
+  useEffect(() => {
+    setRecovery(readRecoveryNotice());
+  }, []);
+
+  const dismissRecovery = () => {
+    try {
+      window.localStorage.removeItem(RECOVERY_FLAG_KEY);
+    } catch {
+      /* nothing we can do; UI dismiss still works */
+    }
+    setRecovery(null);
+  };
 
   const handleExport = () => {
     const dataStr = exportData();
@@ -77,6 +114,28 @@ export default function SettingsTab() {
       </div>
 
       <PageVisual name="settings" />
+
+      {recovery && (
+        <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 flex items-start gap-3">
+          <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+          <div className="flex-1 text-sm">
+            <p className="font-bold text-amber-400">Data recovered</p>
+            <p className="text-amber-200/80">{recovery.message}</p>
+            <p className="text-xs text-amber-200/60 mt-1">
+              Detected {new Date(recovery.at).toLocaleString()} on app load. Your other
+              data is intact.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={dismissRecovery}
+            aria-label="Dismiss recovery notice"
+            className="text-amber-300/70 hover:text-amber-200"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
 
       <Card className="bg-slate-900 border-slate-800">
         <CardHeader>
