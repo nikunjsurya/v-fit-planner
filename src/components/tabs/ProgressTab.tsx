@@ -8,8 +8,8 @@ import { Plus, Trash2, TrendingUp } from 'lucide-react';
 import { formatDateKey, parseDateKey } from '../../utils/dateKeys';
 import PageVisual from '../ui/PageVisual';
 
-const blankEntry = (): Omit<ProgressEntry, 'id'> => ({
-  date: formatDateKey(new Date()),
+const blankEntry = (dateStr: string): Omit<ProgressEntry, 'id'> => ({
+  date: dateStr,
   weight: '',
   waist: '',
   sleep: '',
@@ -17,15 +17,18 @@ const blankEntry = (): Omit<ProgressEntry, 'id'> => ({
 });
 
 export default function ProgressTab() {
-  const { progress, setProgress } = useAppContext();
+  const { progress, setProgress, selectedDate } = useAppContext();
   const [showAdd, setShowAdd] = useState(false);
-  const [draft, setDraft] = useState(blankEntry);
+  // Default the entry's date to the day the user is reviewing on the
+  // dashboard so back-filling a Saturday weigh-in from Monday writes to
+  // Saturday's row.
+  const [draft, setDraft] = useState(() => blankEntry(formatDateKey(selectedDate)));
 
   const handleAdd = (e: React.FormEvent) => {
     e.preventDefault();
     const entry: ProgressEntry = { ...draft, id: uuidv4() };
     setProgress(prev => [entry, ...prev]);
-    setDraft(blankEntry());
+    setDraft(blankEntry(formatDateKey(selectedDate)));
     setShowAdd(false);
   };
 

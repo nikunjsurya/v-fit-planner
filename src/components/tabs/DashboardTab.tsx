@@ -4,8 +4,8 @@ import {
   addDays,
   subDays,
   startOfWeek,
-  isSameDay,
   startOfDay,
+  isSameDay,
 } from 'date-fns';
 import { useAppContext, DailyTracking } from '../../context/AppContext';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/card';
@@ -53,8 +53,7 @@ function hasTrackingActivity(day: DailyTracking | undefined): boolean {
 }
 
 export default function DashboardTab() {
-  const { tracking, setTracking, workouts } = useAppContext();
-  const [selectedDate, setSelectedDate] = useState(startOfDay(new Date()));
+  const { tracking, setTracking, workouts, selectedDate, setSelectedDate } = useAppContext();
   const [missedWorkout, setMissedWorkout] = useState<{ date: string; workout: WorkoutDay } | null>(null);
 
   const [proteinCalcOpen, setProteinCalcOpen] = useState(false);

@@ -3,9 +3,11 @@ import React, {
   useContext,
   useEffect,
   useMemo,
+  useState,
   Dispatch,
   SetStateAction,
 } from 'react';
+import { startOfDay } from 'date-fns';
 import {
   WorkoutDay,
   GroceryCategory,
@@ -63,6 +65,12 @@ type AppContextType = {
   setReminders: Dispatch<SetStateAction<ReminderSettings>>;
   profile: UserProfile;
   setProfile: Dispatch<SetStateAction<UserProfile>>;
+  // The day the user is currently reviewing. Lives here (not in
+  // DashboardTab) so the Workouts and Progress tabs can read/write the
+  // same date when the user is back-filling a missed day. Defaults to
+  // today on mount.
+  selectedDate: Date;
+  setSelectedDate: Dispatch<SetStateAction<Date>>;
   resetToDefaults: () => void;
   exportData: () => string;
   importData: (jsonString: string) => void; // throws on validation failure
@@ -94,6 +102,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [profile, setProfile] = useLocalStorage<UserProfile>(
     STORAGE_KEYS.profile,
     defaultProfile,
+  );
+  const [selectedDate, setSelectedDate] = useState<Date>(() =>
+    startOfDay(new Date()),
   );
   const normalizedWorkouts = useMemo(
     () => ensureWorkoutAlternates(workouts),
@@ -161,6 +172,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         progress, setProgress,
         reminders, setReminders,
         profile, setProfile,
+        selectedDate, setSelectedDate,
         resetToDefaults, exportData, importData,
       }}
     >

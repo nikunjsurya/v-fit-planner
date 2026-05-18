@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { format, isSameDay } from 'date-fns';
 import { useAppContext, ExerciseTracking, DailyTracking } from '../../context/AppContext';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/card';
 import { Button } from '../ui/button';
@@ -29,7 +30,7 @@ const EMPTY_TRACKING: DailyTracking = {
 type PlanMode = 'primary' | 'alternate';
 
 export default function WorkoutsTab() {
-  const { workouts, setWorkouts, tracking, setTracking } = useAppContext();
+  const { workouts, setWorkouts, tracking, setTracking, selectedDate } = useAppContext();
   const [activeId, setActiveId] = useState<string | null>(null);
   const [planMode, setPlanMode] = useState<PlanMode>('primary');
   const [isEditing, setIsEditing] = useState(false);
@@ -42,8 +43,12 @@ export default function WorkoutsTab() {
     [workouts, activeId],
   );
 
-  const todayStr = formatDateKey(new Date());
-  const todayTracking = tracking[todayStr] ?? EMPTY_TRACKING;
+  // Tracking key follows the day the user is reviewing on the dashboard,
+  // not literal today, so logging exercises while back-filling a missed
+  // workout writes to the right date.
+  const trackingDateStr = formatDateKey(selectedDate);
+  const trackingDayTracking = tracking[trackingDateStr] ?? EMPTY_TRACKING;
+  const isViewingToday = isSameDay(selectedDate, new Date());
 
   const startEdit = () => {
     if (!activeWorkout) return;
@@ -83,7 +88,7 @@ export default function WorkoutsTab() {
     patch: Partial<ExerciseTracking> | null,
   ) => {
     setTracking(prev => {
-      const day = prev[todayStr] ?? EMPTY_TRACKING;
+      const day = prev[trackingDateStr] ?? EMPTY_TRACKING;
       const exMap = { ...(day.exercises ?? {}) };
       if (patch === null) {
         delete exMap[exerciseId];
@@ -91,7 +96,7 @@ export default function WorkoutsTab() {
         const existing = exMap[exerciseId] ?? { status: 'done' as const };
         exMap[exerciseId] = { ...existing, ...patch };
       }
-      return { ...prev, [todayStr]: { ...EMPTY_TRACKING, ...day, exercises: exMap } };
+      return { ...prev, [trackingDateStr]: { ...EMPTY_TRACKING, ...day, exercises: exMap } };
     });
   };
 
@@ -267,9 +272,28 @@ export default function WorkoutsTab() {
           </div>
         )}
 
+        <div
+          className={`mt-2 rounded-xl border px-3 py-2 text-xs ${
+            isViewingToday
+              ? 'border-emerald-500/20 bg-emerald-500/5 text-emerald-300'
+              : 'border-amber-500/30 bg-amber-500/10 text-amber-300'
+          }`}
+        >
+          <span className="font-bold uppercase tracking-wider">
+            {isViewingToday ? 'Logging today' : 'Back-filling'}
+          </span>
+          {' · '}
+          <span>{format(selectedDate, 'EEEE, MMM do')}</span>
+          {!isViewingToday && (
+            <span className="ml-2 text-amber-200/70">
+              (change date on the Today tab)
+            </span>
+          )}
+        </div>
+
         <div className="space-y-3 mt-6">
           {visibleExercises.map((ex, idx) => {
-            const exTrack = todayTracking.exercises?.[ex.id];
+            const exTrack = trackingDayTracking.exercises?.[ex.id];
             return (
               <ExerciseCard
                 key={ex.id}
