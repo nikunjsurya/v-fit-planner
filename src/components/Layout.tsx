@@ -49,7 +49,7 @@ export default function Layout() {
           />
           <div>
             <h1 className="text-lg font-semibold leading-none tracking-tight text-white mb-0.5">V-Fit Planner</h1>
-            <p className="text-[10px] text-slate-500">Night Shift Mode</p>
+            <p className="text-[10px] text-slate-400">Night Shift Mode</p>
           </div>
         </div>
         <nav className="flex-1 space-y-1.5 p-4 overflow-y-auto">
@@ -74,7 +74,7 @@ export default function Layout() {
         </nav>
         <div className="mt-auto p-4">
           <div className="p-4 bg-slate-800/30 rounded-xl border border-slate-700/50">
-            <p className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-2">Profile</p>
+            <p className="text-[10px] uppercase tracking-wider text-slate-400 font-bold mb-2">Profile</p>
             <p className="text-xs font-medium text-slate-300">{profile.name || 'Add your name'}</p>
             <p className="text-xs font-medium text-slate-300">
               {profile.age ? `${profile.age} yrs` : 'Age?'}

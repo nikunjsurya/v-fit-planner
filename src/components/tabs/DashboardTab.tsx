@@ -167,7 +167,7 @@ export default function DashboardTab() {
           <h2 className="text-3xl font-bold tracking-tight text-white">
             {isViewingToday ? 'Today' : format(selectedDate, 'EEEE')}
           </h2>
-          <span className="text-sm font-semibold text-slate-500">
+          <span className="text-sm font-semibold text-slate-400">
             {format(selectedDate, 'MMM do, yyyy')}
           </span>
         </div>
@@ -419,7 +419,7 @@ export default function DashboardTab() {
                 <ChefHat className="w-5 h-5 text-amber-500" />
                 <div>
                   <p className="text-sm font-medium text-slate-200">Meal-prep boxes done</p>
-                  <p className="text-[11px] text-slate-500">Out of 3 daily portions</p>
+                  <p className="text-[11px] text-slate-400">Out of 3 daily portions</p>
                 </div>
               </div>
               <div className="flex items-center gap-3 bg-slate-950 px-2 py-1.5 rounded-xl border border-slate-800">
@@ -483,8 +483,9 @@ export default function DashboardTab() {
             <textarea
               rows={2}
               value={selectedTracking.notes ?? ''}
-              onChange={e => updateTracking({ notes: e.target.value })}
+              onChange={e => updateTracking({ notes: e.target.value.slice(0, 2000) })}
               placeholder="Anything to remember? Mood, energy, soreness..."
+              maxLength={2000}
               className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-sm text-white focus:border-emerald-500 outline-none transition"
             />
           </div>

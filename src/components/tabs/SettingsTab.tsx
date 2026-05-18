@@ -45,6 +45,10 @@ export default function SettingsTab() {
   const [importError, setImportError] = useState<string | null>(null);
   const [importOk, setImportOk] = useState(false);
   const [recovery, setRecovery] = useState<RecoveryNotice | null>(null);
+  const [exportBusy, setExportBusy] = useState(false);
+  // Ref gate is synchronous; useState batches and would miss rapid
+  // double-clicks in the same tick.
+  const exportBusyRef = useRef(false);
 
   useEffect(() => {
     setRecovery(readRecoveryNotice());
@@ -60,18 +64,35 @@ export default function SettingsTab() {
   };
 
   const handleExport = () => {
-    const dataStr = exportData();
-    // Use a Blob URL — the dataURI approach in the original implementation hits
-    // browser URL-length limits when tracking history grows large.
-    const blob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `fitplanner-backup-${formatDateKey(new Date())}.json`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    window.setTimeout(() => URL.revokeObjectURL(url), 0);
+    // Guard against rapid double-clicks — without this, ten clicks in a
+    // single tick produce ten downloads. State updates are batched so
+    // disabled={exportBusy} doesn't take effect until the next render;
+    // a ref flips synchronously and blocks re-entry immediately.
+    if (exportBusyRef.current) return;
+    exportBusyRef.current = true;
+    setExportBusy(true);
+    try {
+      const dataStr = exportData();
+      // Use a Blob URL — the dataURI approach in the original implementation hits
+      // browser URL-length limits when tracking history grows large.
+      const blob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `fitplanner-backup-${formatDateKey(new Date())}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.setTimeout(() => {
+        URL.revokeObjectURL(url);
+        exportBusyRef.current = false;
+        setExportBusy(false);
+      }, 800);
+    } catch (err) {
+      console.error('[settings] export failed', err);
+      exportBusyRef.current = false;
+      setExportBusy(false);
+    }
   };
 
   const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -150,8 +171,9 @@ export default function SettingsTab() {
             <ProfileField label="Name">
               <input
                 value={profile.name}
-                onChange={e => setProfile({ ...profile, name: e.target.value })}
+                onChange={e => setProfile({ ...profile, name: e.target.value.slice(0, 500) })}
                 placeholder="Your name"
+                maxLength={500}
                 className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:border-emerald-500 outline-none"
               />
             </ProfileField>
@@ -191,14 +213,16 @@ export default function SettingsTab() {
             <ProfileField label="Diet">
               <input
                 value={profile.diet}
-                onChange={e => setProfile({ ...profile, diet: e.target.value })}
+                onChange={e => setProfile({ ...profile, diet: e.target.value.slice(0, 500) })}
+                maxLength={500}
                 className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:border-emerald-500 outline-none"
               />
             </ProfileField>
             <ProfileField label="Shift / schedule">
               <input
                 value={profile.shiftSummary}
-                onChange={e => setProfile({ ...profile, shiftSummary: e.target.value })}
+                onChange={e => setProfile({ ...profile, shiftSummary: e.target.value.slice(0, 500) })}
+                maxLength={500}
                 className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:border-emerald-500 outline-none"
               />
             </ProfileField>
@@ -290,9 +314,9 @@ export default function SettingsTab() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex flex-wrap gap-3">
-            <Button variant="outline" onClick={handleExport}>
+            <Button variant="outline" onClick={handleExport} disabled={exportBusy}>
               <Download className="w-4 h-4 mr-2" />
-              Backup data
+              {exportBusy ? 'Backing up…' : 'Backup data'}
             </Button>
 
             <Button variant="outline" onClick={() => fileInputRef.current?.click()}>
