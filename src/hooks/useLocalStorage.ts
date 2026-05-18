@@ -72,9 +72,20 @@ export function useLocalStorage<T>(
     try {
       storage.setItem(key, JSON.stringify(value));
     } catch (err) {
-      // Quota or serialization error. Don't crash; user can still use the app
-      // for the current session. Surface to the console for debugging.
-      console.warn(`[useLocalStorage] Failed to write "${key}".`, err);
+      // Quota or serialization error. The in-memory state still has the
+      // value for the session, but writes won't persist. Flag it so the
+      // SettingsTab recovery banner explains the silence; we don't throw
+      // because the user can keep using the app for this session.
+      const isQuota =
+        err instanceof DOMException &&
+        (err.name === 'QuotaExceededError' ||
+          err.code === 22 ||
+          err.name === 'NS_ERROR_DOM_QUOTA_REACHED');
+      const reason = isQuota
+        ? `Storage quota was exceeded while saving "${key}". New changes for this session will not persist on reload. Free up space by exporting + resetting.`
+        : `Failed to write "${key}" to storage. New changes for this session may not persist.`;
+      console.warn(`[useLocalStorage] ${reason}`, err);
+      flagRecovery(key, reason);
     }
   }, [key, value]);
 

@@ -128,6 +128,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       setProgress([]);
       setReminders(defaultReminders);
       setProfile(defaultProfile);
+      // Bring the dashboard back to today; otherwise the user is left
+      // reviewing whatever past day was selected before the reset.
+      setSelectedDate(startOfDay(new Date()));
     }
   };
 

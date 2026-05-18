@@ -3,6 +3,7 @@ import {
   format,
   addDays,
   subDays,
+  addWeeks,
   startOfWeek,
   startOfDay,
   isSameDay,
@@ -124,7 +125,37 @@ export default function DashboardTab() {
   return (
     <div className="space-y-6">
       {/* Weekly calendar strip */}
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl p-4 overflow-x-auto select-none">
+      <div className="bg-slate-900 border border-slate-800 rounded-3xl p-3 sm:p-4 overflow-x-auto select-none">
+        <div className="flex items-center justify-between gap-2 mb-2">
+          <button
+            type="button"
+            aria-label="Previous week"
+            onClick={() => setSelectedDate(addWeeks(selectedDate, -1))}
+            className="h-8 w-8 rounded-lg bg-slate-800/60 text-slate-300 hover:bg-slate-700 hover:text-white transition flex items-center justify-center text-sm font-bold"
+          >
+            ‹
+          </button>
+          <div className="text-[11px] uppercase tracking-wider text-slate-400 font-bold">
+            {format(weekStart, 'MMM yyyy')}
+            {!isSameDay(weekStart, startOfWeek(new Date(), { weekStartsOn: 1 })) && (
+              <button
+                type="button"
+                onClick={() => setSelectedDate(startOfDay(new Date()))}
+                className="ml-3 text-emerald-400 hover:text-emerald-300 underline-offset-2 hover:underline"
+              >
+                jump to today
+              </button>
+            )}
+          </div>
+          <button
+            type="button"
+            aria-label="Next week"
+            onClick={() => setSelectedDate(addWeeks(selectedDate, 1))}
+            className="h-8 w-8 rounded-lg bg-slate-800/60 text-slate-300 hover:bg-slate-700 hover:text-white transition flex items-center justify-center text-sm font-bold"
+          >
+            ›
+          </button>
+        </div>
         <div className="flex justify-between items-center min-w-[320px] gap-2">
           {weekDays.map(day => {
             const isSelected = isSameDay(day, selectedDate);

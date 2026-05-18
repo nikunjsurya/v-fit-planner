@@ -115,12 +115,15 @@ export default function Layout() {
           return (
             <button
               key={tab.id}
+              type="button"
               onClick={() => setActiveTab(tab.id)}
-              className={`flex flex-col items-center justify-center w-full h-full space-y-1 ${
-                isActive ? 'text-emerald-400' : 'text-slate-500 hover:text-slate-300'
+              aria-label={`${tab.label} tab`}
+              aria-current={isActive ? 'page' : undefined}
+              className={`flex flex-col items-center justify-center w-full h-full space-y-1 min-h-[44px] ${
+                isActive ? 'text-emerald-400' : 'text-slate-400 hover:text-slate-200'
               }`}
             >
-              <Icon className="h-5 w-5" />
+              <Icon className="h-5 w-5" aria-hidden="true" />
               <span className="text-[10px] font-medium">{tab.label}</span>
             </button>
           );

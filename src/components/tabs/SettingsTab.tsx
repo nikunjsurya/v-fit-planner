@@ -183,7 +183,10 @@ export default function SettingsTab() {
                 min={10}
                 max={120}
                 value={profile.age}
-                onChange={e => setProfile({ ...profile, age: Number(e.target.value) || 0 })}
+                onChange={e => {
+                  const n = Number(e.target.value);
+                  setProfile({ ...profile, age: Number.isFinite(n) ? Math.max(0, Math.min(120, n)) : 0 });
+                }}
                 className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:border-emerald-500 outline-none"
               />
             </ProfileField>
@@ -193,7 +196,10 @@ export default function SettingsTab() {
                 min={100}
                 max={250}
                 value={profile.heightCm}
-                onChange={e => setProfile({ ...profile, heightCm: Number(e.target.value) || 0 })}
+                onChange={e => {
+                  const n = Number(e.target.value);
+                  setProfile({ ...profile, heightCm: Number.isFinite(n) ? Math.max(0, Math.min(250, n)) : 0 });
+                }}
                 className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:border-emerald-500 outline-none"
               />
             </ProfileField>
@@ -204,9 +210,10 @@ export default function SettingsTab() {
                 min={30}
                 max={250}
                 value={profile.goalWeightKg}
-                onChange={e =>
-                  setProfile({ ...profile, goalWeightKg: Number(e.target.value) || 0 })
-                }
+                onChange={e => {
+                  const n = Number(e.target.value);
+                  setProfile({ ...profile, goalWeightKg: Number.isFinite(n) ? Math.max(0, Math.min(250, n)) : 0 });
+                }}
                 className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:border-emerald-500 outline-none"
               />
             </ProfileField>

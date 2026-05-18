@@ -59,6 +59,13 @@ export default function WorkoutsTab() {
 
   const saveEdit = () => {
     if (!editData) return;
+    // Don't let users save a workout with a blank or whitespace-only
+    // name — it propagates everywhere (sidebar, missed-workout banner,
+    // tracking foreign keys) and looks like the app is broken.
+    if (!editData.name.trim()) {
+      window.alert('Workout name cannot be empty.');
+      return;
+    }
     setWorkouts(prev => prev.map(w => (w.id === editData.id ? editData : w)));
     setIsEditing(false);
   };
@@ -137,14 +144,16 @@ export default function WorkoutsTab() {
           <Field label="Workout name">
             <input
               value={editData.name}
-              onChange={e => setEditData({ ...editData, name: e.target.value })}
+              maxLength={120}
+              onChange={e => setEditData({ ...editData, name: e.target.value.slice(0, 120) })}
               className="w-full bg-slate-900 border border-slate-800 rounded-lg p-2.5 text-sm text-white focus:border-emerald-500 outline-none"
             />
           </Field>
           <Field label="Description / times">
             <textarea
               value={editData.description}
-              onChange={e => setEditData({ ...editData, description: e.target.value })}
+              maxLength={500}
+              onChange={e => setEditData({ ...editData, description: e.target.value.slice(0, 500) })}
               className="w-full bg-slate-900 border border-slate-800 rounded-lg p-2.5 text-sm text-white focus:border-emerald-500 outline-none h-20"
             />
           </Field>
@@ -159,7 +168,8 @@ export default function WorkoutsTab() {
                   <Field label={`Exercise ${idx + 1}`}>
                     <input
                       value={ex.name}
-                      onChange={e => updateExercise(idx, 'name', e.target.value)}
+                      maxLength={120}
+                      onChange={e => updateExercise(idx, 'name', e.target.value.slice(0, 120))}
                       className="w-full bg-slate-950 border border-slate-800 rounded px-2 py-1.5 text-sm text-white focus:border-emerald-500 outline-none"
                     />
                   </Field>
@@ -167,14 +177,16 @@ export default function WorkoutsTab() {
                     <Field label="Sets x reps">
                       <input
                         value={ex.sets}
-                        onChange={e => updateExercise(idx, 'sets', e.target.value)}
+                        maxLength={60}
+                        onChange={e => updateExercise(idx, 'sets', e.target.value.slice(0, 60))}
                         className="w-full bg-slate-950 border border-slate-800 rounded px-2 py-1.5 text-sm text-white focus:border-emerald-500 outline-none"
                       />
                     </Field>
                     <Field label="Rest">
                       <input
                         value={ex.rest}
-                        onChange={e => updateExercise(idx, 'rest', e.target.value)}
+                        maxLength={30}
+                        onChange={e => updateExercise(idx, 'rest', e.target.value.slice(0, 30))}
                         className="w-full bg-slate-950 border border-slate-800 rounded px-2 py-1.5 text-sm text-white focus:border-emerald-500 outline-none"
                       />
                     </Field>
@@ -183,7 +195,8 @@ export default function WorkoutsTab() {
                 <Field label="Alternatives (comma-separated)">
                   <input
                     value={ex.alternatives.join(', ')}
-                    onChange={e => updateExercise(idx, 'alternatives', e.target.value)}
+                    maxLength={500}
+                    onChange={e => updateExercise(idx, 'alternatives', e.target.value.slice(0, 500))}
                     className="w-full bg-slate-950 border border-slate-800 rounded px-2 py-1.5 text-sm text-white focus:border-emerald-500 outline-none"
                   />
                 </Field>
@@ -558,7 +571,8 @@ function ExerciseCard({
             <textarea
               rows={2}
               value={tracking?.note ?? ''}
-              onChange={e => onSetNote(e.target.value)}
+              maxLength={2000}
+              onChange={e => onSetNote(e.target.value.slice(0, 2000))}
               placeholder="Note for this exercise (weight used, form cues, etc.)"
               className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs text-white focus:border-emerald-500 outline-none"
             />
