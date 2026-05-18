@@ -15,3 +15,9 @@ Thumbs.db
 .idea/
 
 .claude/settings.local.json
+
+# playwright
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
